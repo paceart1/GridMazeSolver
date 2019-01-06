@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using GridMazeSolverApplication.Controller;
+using GridMazeSolverApplication.View;
 namespace GridMazeSolverApplication
 {
     class Program
     {
         static void Main(string[] args)
         {
+            MainForm view = new MainForm();
+
+            MainController controller = new MainController(view);
+
+            view.ShowDialog();
         }
     }
 }
