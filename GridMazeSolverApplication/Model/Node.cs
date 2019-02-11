@@ -1,35 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 namespace GridMazeSolverApplication.Model
 {
-    public class Node
+    public class Node: INode
     {
+        //Private Fields
+        INode previosNodeToCurrent;
+        int typeValue;
+        double distanceWeightValue;
+        double distanceToNodeFromStart;
+        int xPosition;
+        int yPosition;
+        //Private Functions
         private void InitializeDefaultPropertyValues()
         {
             PreviousNodeToCurrent = null;
         }
-        public List<Node> ConnectedNodes { get; }
-        public Node PreviousNodeToCurrent { get; private set; }
-       
-        public int TypeValue { get; private set; }
-        public bool OpenNode { get; set; }
-        public double DistanceWeightValue { get; set; }
-        public double DistanceToNodeFromStart { get; set; }
-        public int X { get; private set; }
-        public int Y { get; private set; }
 
-        public void SetMazeTypeValue(int typeVal)
+        //Public Properties
+        public INode PreviousNodeToCurrent
         {
-            //Validate
-            TypeValue = typeVal;
+            get { return previosNodeToCurrent; }
+            set { previosNodeToCurrent = value; }
         }
-        public void AddConnectedNode(Node n)
+        public MazeCellTypeValues TypeValue
         {
-            if (n == null) { throw new ArgumentNullException("Passed Node cannot be null."); }
-            if (n == this) { throw new ArgumentException("Circular Reference. Cannot connect to self."); } 
-            ConnectedNodes.Add(n);
+            get { return (MazeCellTypeValues)typeValue; }
+            set { typeValue = (int)value; }
         }
-        public void SetNodeAsPathToCurrent(Node n)
+        public MazeCellWeightValues DistanceWeightValue
+        {
+            get
+            {
+                return (MazeCellWeightValues)distanceWeightValue;
+            }
+            set
+            {
+                int distanceValue = (int)value;
+                if(distanceValue < 0) { throw new System.Exception("Distance weight value cannot be negative"); }
+                distanceWeightValue = distanceValue;
+            }
+        }
+        public double DistanceToNodeFromStart
+        {
+            get { return distanceToNodeFromStart; }
+            set { distanceToNodeFromStart = value; }
+        }
+        public int XPosition
+        {
+            get { return xPosition; }
+            private set { xPosition = value; }
+        }
+        public int YPosition
+        {
+            get { return yPosition; }
+            private set { yPosition = value; }
+        }
+
+        //Public Methods
+
+        public void SetNodeAsPathToCurrent(INode n)
         {
             PreviousNodeToCurrent = n;
         }
@@ -40,9 +69,8 @@ namespace GridMazeSolverApplication.Model
         //Constructors
         public Node(int x, int y)
         {
-            ConnectedNodes = new List<Node>();
-            X = x;
-            Y = y;
+            XPosition = x;
+            YPosition = y;
             InitializeDefaultPropertyValues();
         }
         

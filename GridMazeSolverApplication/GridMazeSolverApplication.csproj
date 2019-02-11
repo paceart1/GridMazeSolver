@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\IAlgorithm.cs" />
+    <Compile Include="Model\Interfaces\IAlgorithm.cs" />
     <Compile Include="Controller\IMainView.cs" />
+    <Compile Include="Model\Interfaces\IMaze.cs" />
+    <Compile Include="Model\Interfaces\INode.cs" />
     <Compile Include="Controller\MainController.cs" />
     <Compile Include="CustomControls\VisualGrid.cs">
       <SubType>UserControl</SubType>
@@ -57,11 +59,14 @@
       <DependentUpon>VisualGrid.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Algorithms\Dijkstra.cs" />
+    <Compile Include="Model\EnumDefinedValues\AlgorithmTypes.cs" />
+    <Compile Include="Model\EnumDefinedValues\MazeTypes.cs" />
     <Compile Include="Model\Maze.cs" />
-    <Compile Include="Model\MazeBuilder.cs" />
-    <Compile Include="Model\MazeCellTypeValues.cs" />
-    <Compile Include="Model\MazeWeightValues.cs" />
+    <Compile Include="Model\MazeGridFactory.cs" />
+    <Compile Include="Model\EnumDefinedValues\MazeCellTypes.cs" />
+    <Compile Include="Model\EnumDefinedValues\MazeCellWeights.cs" />
     <Compile Include="Model\Node.cs" />
+    <Compile Include="Model\Solution.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\DisplayColors.cs" />

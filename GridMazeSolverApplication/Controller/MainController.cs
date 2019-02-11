@@ -1,5 +1,7 @@
 ﻿using GridMazeSolverApplication.Model;
 using GridMazeSolverApplication.Model.Algorithms;
+using GridMazeSolverApplication.Model.EnumDefinedValues;
+using GridMazeSolverApplication.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 namespace GridMazeSolverApplication.Controller
@@ -9,24 +11,26 @@ namespace GridMazeSolverApplication.Controller
         IMainView View;
         List<IAlgorithm> Algorithms;
         IAlgorithm CurrentAlgorithm;
-        Maze Maze;
+        IMaze Maze;
+
         //List<Node> MazeSolution; //Need to refactor to keep solution persistant
         
-        //Control Methods
+        //Local Control Methods
         private void InitializeProgramValues()
         {
             Algorithms.Add(new Dijkstra());
             UpdateCurrentAlgorithm(Algorithms[0]);
-            UpdateViewDisplayAlgorithms(Algorithms);
+            UpdateViewLoadAlgorithmsList(Algorithms);
+            UpdateViewLoadMazeTypesList(); 
             UpdateViewDisplayCurrentAlgorithm(CurrentAlgorithm, Algorithms);
 
             UpdateViewDisplayCurrentMazeDimensions(10); //need to update
             UpdateViewDisplayCurrentMazeType(0); //need to update
         }     
-        private List<Node> GetMazeSolutionFromAlgorithm(Maze maze, IAlgorithm algorithm)
+        private List<INode> GetMazeSolutionFromAlgorithm(IMaze maze, IAlgorithm algorithm)
         {
           //  currentAlgorithm.LoadGridTable(maze.MazeGrid, maze.Start, maze.End);
-            List<Node> newSolution = algorithm.GetMazeSolution(maze);
+            List<INode> newSolution = algorithm.GetMazeSolution(maze);
             //Write condition for unsolvable maze : (End's previous is null)
             return newSolution;
           
@@ -39,25 +43,27 @@ namespace GridMazeSolverApplication.Controller
         {
             CurrentAlgorithm = algorithm;
         }
-        private List<Node> CreateNewMaze(int mazeType, int mazeDimensions)
+        private List<INode> GenerateNewMaze(MazeTypes mazeType, int mazeDimensions)
         {
-            //Temp code
-            int mazeDimension = mazeDimensions;
-            List<Node> newMaze;
-            switch (mazeType)
-            {
-                case 0:
-                    newMaze = MazeBuilder.GenerateBlankMaze(mazeDimension);
-                    break;
-                case 1:
-                    newMaze = MazeBuilder.GenerateScatterMaze(mazeDimension);
-                    break;
-                default:
-                    newMaze = null;
-                    break;
-            }
-           
+            List<INode> newMaze;
+            newMaze = MazeGridFactory.GenerateMaze(mazeType, mazeDimensions);
             return newMaze;
+        }
+        private void SetMazeGrid(MazeTypes type, int dimensions)
+        {
+            Maze.SetNewMazeGrid(GenerateNewMaze(type, dimensions), dimensions);
+        }
+        private void SetMazeStart()
+        {
+            INode start = Maze.GetNode(0, 0);
+            start.TypeValue = MazeCellTypeValues.open;
+            Maze.Start = start;
+        }
+        private void SetMazeEnd(int mazeDimension)
+        {
+            INode end = Maze.GetNode(mazeDimension - 1, mazeDimension - 1);
+            end.TypeValue = MazeCellTypeValues.open;
+            Maze.End = end;
         }
         private void ConnectEventMethodsToView()
         {
@@ -66,13 +72,18 @@ namespace GridMazeSolverApplication.Controller
             View.OnShowMazeSolutionSelected += EventDisplaySolutionSelected;
             View.OnPaintGridControl += EventPaintGrid;
         }
-        
-        
+         
         //Event Methods
         private void EventDisplaySolutionSelected(Object sender, EventArgs e)
         {
+            try
+            {
                 UpdateViewDisplayMazeSolutionPath(GetMazeSolutionFromAlgorithm(Maze, CurrentAlgorithm));
-  
+            }
+            catch(Exception ex)
+            {
+                View.DisplayErrorDetails(ex);
+            }
         }
         private void EventSetCurrectAlgorithmSelected(Object sender, EventArgs e)
         {
@@ -90,18 +101,21 @@ namespace GridMazeSolverApplication.Controller
             try
             {
                 int newMazeDimension = View.MazeDimensionsSelected;
-                int newMazeType = View.CurrentMazeTypeSelected;
-               // Maze.DeleteMazeGrid();
-                Maze.SetNewMazeGrid(CreateNewMaze(newMazeType, newMazeDimension), newMazeDimension);
-                Maze.SetGridCellStart(0, 0); //refactor
-                Maze.SetGridCellEnd(newMazeDimension - 1, newMazeDimension - 1);
+                MazeTypes newMazeType = (MazeTypes)View.CurrentMazeTypeSelected;
+
+                SetMazeGrid(newMazeType, newMazeDimension);
+                SetMazeStart();
+                SetMazeEnd(newMazeDimension);
+                
                 //Update View to display maze
                 UpdateViewDisplayMaze(Maze.MazeGrid);
+                UpdateViewDisplayStart(Maze.Start);
+                UpdateViewDisplayEnd(Maze.End);
                 UpdateViewDrawGrid();
             }
             catch(Exception ex)
             {
-                //System.Windows.Forms.MessageBox.Show(ex.Message);
+                View.DisplayErrorDetails(ex);
             }
 
         }
@@ -115,20 +129,36 @@ namespace GridMazeSolverApplication.Controller
         }
 
         //Update View methods
-        private void UpdateViewDisplayMaze(List<Node> mazeNodeList)
+        private void UpdateViewDisplayMaze(List<INode> mazeNodeList)
         {
             if(mazeNodeList == null) { throw new ArgumentNullException("passedMazeGrid cannot be null."); }
-            foreach (Node n in mazeNodeList)
+            foreach (INode n in mazeNodeList)
             {
-                View.UpdateCellType(n.X, n.Y, n.TypeValue);
+                View.UpdateCellType(n.XPosition, n.YPosition, (int)n.TypeValue);    
             }
         }
-        private void UpdateViewDisplayAlgorithms(List<IAlgorithm> algorithmsList)
+        private void UpdateViewDisplayStart(INode start)
+        {
+            View.UpdateStart(start.XPosition, start.YPosition);
+        }
+        private void UpdateViewDisplayEnd(INode end)
+        {
+            View.UpdateEnd(end.XPosition, end.YPosition);
+        }
+        private void UpdateViewLoadAlgorithmsList(List<IAlgorithm> algorithmsList)
         {
             foreach (IAlgorithm a in algorithmsList)
             {
                 View.AddAlgorithmToList(a.Name);
             }
+        }
+        private void UpdateViewLoadMazeTypesList()
+        {
+            //tempCode
+            
+            View.AddMazeTypeToList(MazeTypes.Blank.ToString());
+            View.AddMazeTypeToList(MazeTypes.Scatter.ToString());
+            View.AddMazeTypeToList(MazeTypes.Traditional.ToString());
         }
         private void UpdateViewDisplayCurrentAlgorithm(IAlgorithm algorithm, List<IAlgorithm> algorithmList)
         {
@@ -143,22 +173,17 @@ namespace GridMazeSolverApplication.Controller
         {
             View.CurrentMazeTypeSelected = mazeTypeValue;
         }
-        private void UpdateViewDisplayMazeSolutionPath(List<Node> mazeSolution)
+        private void UpdateViewDisplayMazeSolutionPath(List<INode> mazeSolution)
         {
             //test code for path
             //make async?? 
-            for(int ii = 1; ii < mazeSolution.Count - 1; ii++)
+
+            foreach (INode n in mazeSolution)
             {
-                int x = mazeSolution[ii].X;
-                int y = mazeSolution[ii].Y;
-                View.UpdateCellType(x, y, (int)MazeCellTypeValues.path);
+                int x = n.XPosition;
+                int y = n.YPosition;
+                View.UpdateSolutionPath(x, y);
             }
-            /*foreach (Node n in mazeSolution)
-            {
-                int x = n.X;
-                int y = n.Y;
-                View.UpdateCellType(x, y, (int)MazeCellTypeValues.path);
-            }*/
         }
         private void UpdateViewDrawGrid()
         {

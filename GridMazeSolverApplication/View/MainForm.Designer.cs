@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.MazeOptions_UIGroupbox = new System.Windows.Forms.GroupBox();
-            this.MazeType_UIComboBox = new System.Windows.Forms.ComboBox();
+            this.SetMazeType_UIComboBox = new System.Windows.Forms.ComboBox();
             this.MazeType_UILabel = new System.Windows.Forms.Label();
             this.MazeDimension_Label = new System.Windows.Forms.Label();
             this.MazeDimensions_UINumeric = new System.Windows.Forms.NumericUpDown();
@@ -51,7 +51,7 @@
             // 
             // MazeOptions_UIGroupbox
             // 
-            this.MazeOptions_UIGroupbox.Controls.Add(this.MazeType_UIComboBox);
+            this.MazeOptions_UIGroupbox.Controls.Add(this.SetMazeType_UIComboBox);
             this.MazeOptions_UIGroupbox.Controls.Add(this.MazeType_UILabel);
             this.MazeOptions_UIGroupbox.Controls.Add(this.MazeDimension_Label);
             this.MazeOptions_UIGroupbox.Controls.Add(this.MazeDimensions_UINumeric);
@@ -63,17 +63,13 @@
             this.MazeOptions_UIGroupbox.TabStop = false;
             this.MazeOptions_UIGroupbox.Text = "Maze Options";
             // 
-            // MazeType_UIComboBox
+            // SetMazeType_UIComboBox
             // 
-            this.MazeType_UIComboBox.FormattingEnabled = true;
-            this.MazeType_UIComboBox.Items.AddRange(new object[] {
-            "Blank",
-            "Scatter",
-            "Traditional"});
-            this.MazeType_UIComboBox.Location = new System.Drawing.Point(105, 63);
-            this.MazeType_UIComboBox.Name = "MazeType_UIComboBox";
-            this.MazeType_UIComboBox.Size = new System.Drawing.Size(109, 21);
-            this.MazeType_UIComboBox.TabIndex = 5;
+            this.SetMazeType_UIComboBox.FormattingEnabled = true;
+            this.SetMazeType_UIComboBox.Location = new System.Drawing.Point(105, 63);
+            this.SetMazeType_UIComboBox.Name = "SetMazeType_UIComboBox";
+            this.SetMazeType_UIComboBox.Size = new System.Drawing.Size(109, 21);
+            this.SetMazeType_UIComboBox.TabIndex = 5;
             // 
             // MazeType_UILabel
             // 
@@ -237,7 +233,7 @@
         private CustomControls.VisualGrid Grid_UIVisualGrid;
         private System.Windows.Forms.NumericUpDown MazeDimensions_UINumeric;
         private System.Windows.Forms.Label MazeDimension_Label;
-        private System.Windows.Forms.ComboBox MazeType_UIComboBox;
+        private System.Windows.Forms.ComboBox SetMazeType_UIComboBox;
         private System.Windows.Forms.Label MazeType_UILabel;
     }
 }

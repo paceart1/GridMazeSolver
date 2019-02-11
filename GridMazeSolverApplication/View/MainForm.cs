@@ -7,6 +7,23 @@ namespace GridMazeSolverApplication.View
 {
     public partial class MainForm : Form, IMainView
     {
+
+        //Private EventArgs
+        private void FillCellColor(object sender, MouseEventArgs e)
+        {
+            int xPos = e.Location.X;
+            int yPos = e.Location.Y;
+            int x = Grid_UIVisualGrid.GetCurrentCell(xPos);
+            int y = Grid_UIVisualGrid.GetCurrentCell(yPos);
+            Grid_UIVisualGrid.FillGridCell(x, y, System.Drawing.Color.Gray);
+            Grid_UIVisualGrid.DisplayGrid();
+        }
+        private void UpdateVisualGridDimensions(object sender, EventArgs e)
+        {
+            Grid_UIVisualGrid.SetGridDimensions((int)MazeDimensions_UINumeric.Value);
+
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -80,15 +97,16 @@ namespace GridMazeSolverApplication.View
         }
         public int CurrentMazeTypeSelected
         {
-            get { return MazeType_UIComboBox.SelectedIndex; }
-            set { MazeType_UIComboBox.SelectedIndex = value; }
+            get { return SetMazeType_UIComboBox.SelectedIndex; }
+            set { SetMazeType_UIComboBox.SelectedIndex = value; }
         }
 
         // public int MouseLocationX{get { }}
         // public int MouseLocationY { get; }
 
         //UI Methods
-        public void AddAlgorithmToList(string a) { SetAlgorithm_UICombobox.Items.Add(a); }
+        public void AddAlgorithmToList(string algorithmName) { SetAlgorithm_UICombobox.Items.Add(algorithmName); }
+        public void AddMazeTypeToList(string typeName) { SetMazeType_UIComboBox.Items.Add(typeName); }
         public void UpdateCellType(int x, int y, int type)
         {
             Color c;
@@ -100,15 +118,6 @@ namespace GridMazeSolverApplication.View
                 case 1:
                     c = DisplayColors.WallColor;
                     break;
-                case 2:
-                    c = DisplayColors.StartColor;
-                    break;
-                case 3:
-                    c = DisplayColors.EndColor;
-                    break;
-                case 4:
-                    c = DisplayColors.PathColor;
-                    break;
                 default:
                     c = DisplayColors.UnknownTypeColor;
                     break;
@@ -116,28 +125,30 @@ namespace GridMazeSolverApplication.View
 
             Grid_UIVisualGrid.FillGridCell(x, y, c);
         }
-        //public void DrawPath() { }
+        public void UpdateSolutionPath(int x, int y)
+        {
+            Color c = DisplayColors.PathColor;
+            Grid_UIVisualGrid.FillGridCell(x, y, c);
+        }
+        public void UpdateStart(int x, int y)
+        {
+            Grid_UIVisualGrid.FillGridCell(x, y, DisplayColors.StartColor);
+        }
+        public void UpdateEnd(int x, int y)
+        {
+            Grid_UIVisualGrid.FillGridCell(x, y, DisplayColors.EndColor);
+        }
         public void DrawGrid()
         {
             Grid_UIVisualGrid.DisplayGrid();
         }
-        public void UpdateCellDisplay()
+        //public void UpdateCellDisplay();
+        public void DisplayErrorDetails(Exception ex)
         {
-
-        }
-        private void FillCellColor(object sender, MouseEventArgs e)
-        {
-            int xPos = e.Location.X;
-            int yPos = e.Location.Y;
-            int x = Grid_UIVisualGrid.GetCurrentCell(xPos);
-            int y = Grid_UIVisualGrid.GetCurrentCell(yPos);
-            Grid_UIVisualGrid.FillGridCell(x, y, System.Drawing.Color.Gray);
-            Grid_UIVisualGrid.DisplayGrid();
-        }
-        private void UpdateVisualGridDimensions(object sender, EventArgs e)
-        {
-            Grid_UIVisualGrid.SetGridDimensions((int)MazeDimensions_UINumeric.Value);
-            
+            string message = "StackTrace:\n" + ex.StackTrace + "\n\n" 
+                +"Message:\n" + ex.Message;
+            string title = "Exception Handled:";
+            MessageBox.Show(message, title);
         }
     }
 }

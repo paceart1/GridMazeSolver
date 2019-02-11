@@ -1,4 +1,4 @@
-﻿using GridMazeSolverApplication.Controller;
+﻿using GridMazeSolverApplication.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -6,13 +6,13 @@ namespace GridMazeSolverApplication.Model.Algorithms
 {
     public class Dijkstra : IAlgorithm
     {
-        List<Node> Solution;
-        List<Node> Frontier;
-        List<Node> UnProcessedNodes;
-        List<Node> CurrentNeighbors;
-        Maze Maze;
+        List<INode> Solution;
+        List<INode> Frontier;
+        List<INode> UnProcessedNodes;
+        List<INode> CurrentNeighbors;
+        IMaze Maze;
 
-        List<Node> CalculateMazeSolution(Maze maze)
+        List<INode> CalculateMazeSolution(IMaze maze)
         {
             if (maze == null) { throw new ArgumentNullException("maze cannot be null."); }
             if (maze.Start == null) { throw new ArgumentNullException("Start Node cannot be null."); }
@@ -20,10 +20,10 @@ namespace GridMazeSolverApplication.Model.Algorithms
             if (maze.End == maze.Start){ throw new Exception("Maze start node cannot be the same as it's end node."); }
             if (maze.MazeGrid.Count < 2) { throw new Exception("Maze must have at least 2 cells"); }
 
-            Solution = new List<Node>();
-            Frontier = new List<Node>();
-            UnProcessedNodes = new List<Node>();
-            CurrentNeighbors = new List<Node>();
+            Solution = new List<INode>();
+            Frontier = new List<INode>();
+            UnProcessedNodes = new List<INode>();
+            CurrentNeighbors = new List<INode>();
             Maze = maze;
 
             double startingDistanceVal = 0;
@@ -33,10 +33,10 @@ namespace GridMazeSolverApplication.Model.Algorithms
             Maze.Start.DistanceToNodeFromStart = startingDistanceVal; ;
 
             //Add nodes to unproceddedList
-            foreach (Node n in Maze.MazeGrid) { UnProcessedNodes.Add(n); }
+            foreach (INode n in Maze.MazeGrid) { UnProcessedNodes.Add(n); }
 
             Frontier.Add(Maze.Start);
-            Node currentNode = null;
+            INode currentNode = null;
             
             bool finished = false;
 
@@ -47,9 +47,9 @@ namespace GridMazeSolverApplication.Model.Algorithms
                     currentNode = Frontier[0];
                     UnProcessedNodes.Remove(currentNode);
                     CurrentNeighbors = GetNeighborNodes(currentNode, Maze);
-                        foreach (Node neighbor in CurrentNeighbors)
+                        foreach (INode neighbor in CurrentNeighbors)
                         {
-                            UpdateAdjacentDistancesFromStart(currentNode, neighbor);
+                            UpdateAdjacentDistanceFromStart(currentNode, neighbor);
                             if (!Frontier.Contains(neighbor))
                             {
                                 Frontier.Add(neighbor);
@@ -58,7 +58,7 @@ namespace GridMazeSolverApplication.Model.Algorithms
                     
                     Frontier.Remove(currentNode);
                     //*********sort frontier
-                    Frontier.Sort(delegate (Node x, Node y)
+                    Frontier.Sort(delegate (INode x, INode y)
                     {
                         return x.DistanceToNodeFromStart.CompareTo(y.DistanceToNodeFromStart);
                     });
@@ -74,11 +74,11 @@ namespace GridMazeSolverApplication.Model.Algorithms
         }
 
         //used for calculating solution
-        List<Node> GetFullPathToNode(Node n)
+        List<INode> GetFullPathToNode(INode n)
         {
             if (n == null) { throw new ArgumentNullException("Passed node cannot be null."); }
-            List<Node> path = new List<Node>();
-            Node currentNode = n;
+            List<INode> path = new List<INode>();
+            INode currentNode = n;
             do
             {
                 path.Add(currentNode);
@@ -87,29 +87,24 @@ namespace GridMazeSolverApplication.Model.Algorithms
             while (currentNode != null);
             return path;
         }
-        List<Node> GetNeighborNodes(Node n, Maze maze)
+        List<INode> GetNeighborNodes(INode n, IMaze maze)
         {
             
-            int[,] adjacentIndexes = new int[,] { { n.X, n.Y-1 }, { n.X+1, n.Y }, { n.X, n.Y+1 }, { n.X-1, n.Y } };
-            List<Node> neighbors = new List<Node>();
+            int[,] adjacentIndexes = new int[,] { { n.XPosition, n.YPosition-1 }, { n.XPosition+1, n.YPosition }, { n.XPosition, n.YPosition+1 }, { n.XPosition-1, n.YPosition } };
+            List<INode> neighbors = new List<INode>();
             for (int ii = 0; ii < adjacentIndexes.GetLength(0); ii++)
             {
-                if (!maze.CheckCellInRange(adjacentIndexes[ii, 0], adjacentIndexes[ii, 1]))
-                {
-                    continue;
-                }
-                int pos = maze.GetNodeIndexFrom2DGrid(adjacentIndexes[ii, 0], adjacentIndexes[ii, 1]);
-                if (!UnProcessedNodes.Contains(maze.MazeGrid[pos])){continue; } //<--crash when check (out of range)
-                
-                if (maze.MazeGrid[pos].TypeValue == (int)MazeCellTypeValues.wall) { continue; }
-                neighbors.Add(maze.MazeGrid[pos]);
+                INode currentNode = maze.GetNode(adjacentIndexes[ii, 0], adjacentIndexes[ii, 1]);
+                if (!UnProcessedNodes.Contains(currentNode)){continue; } 
+                if (currentNode.TypeValue == MazeCellTypeValues.wall) { continue; }
+                neighbors.Add(currentNode);
             }
             return neighbors;
         }
-        void UpdateAdjacentDistancesFromStart(Node currentNode, Node neighborNode)
+        void UpdateAdjacentDistanceFromStart(INode currentNode, INode neighborNode)
         {
             double currentDistanceVal = neighborNode.DistanceToNodeFromStart;
-            double newDistanceVal = currentNode.DistanceToNodeFromStart + neighborNode.DistanceWeightValue;
+            double newDistanceVal = currentNode.DistanceToNodeFromStart + (int)neighborNode.DistanceWeightValue;
             if (currentDistanceVal > newDistanceVal)
             {
                 neighborNode.DistanceToNodeFromStart = newDistanceVal;
@@ -117,39 +112,16 @@ namespace GridMazeSolverApplication.Model.Algorithms
             }
         }
         
-        /*
-        void LinkNodeToNeighbor(Node currentNode, Node neighborNode)
-        {
-            currentNode.AddConnectedNode(neighborNode);
-        }
-        void LinkToAdjacentNeighbors(Node currentNode, Maze maze)
-        {
-            Node current = currentNode;
-            int pos;
-            pos= maze.GetNodeIndexFrom2DGrid(current.X + 1, current.Y);
-            LinkNodeToNeighbor(current, maze.MazeGrid[pos]);
-            pos = maze.GetNodeIndexFrom2DGrid(current.X, current.Y + 1);
-            LinkNodeToNeighbor(current, maze.MazeGrid[pos]);
-            pos = maze.GetNodeIndexFrom2DGrid(current.X-1, current.Y);
-            LinkNodeToNeighbor(current, maze.MazeGrid[pos]);
-            pos = maze.GetNodeIndexFrom2DGrid(current.X, current.Y - 1);
-            LinkNodeToNeighbor(current, maze.MazeGrid[pos]);
-        }
-        */
-       
         //Public
         public string Name { get; private set; }
-
-        public List<Node> GetMazeSolution(Maze passedMaze)
+        public List<INode> GetMazeSolution(IMaze passedMaze)
         {
-            List<Node> solution = CalculateMazeSolution(passedMaze);
+            List<INode> solution = CalculateMazeSolution(passedMaze);
             return solution;
         }
         public Dijkstra()
         {
-            Name = "Dijkstra";
-
-            
+            Name = "Dijkstra";    
         }
     }
 }
