@@ -9,15 +9,7 @@ namespace GridMazeSolverApplication.View
     {
 
         //Private EventArgs
-        private void FillCellColor(object sender, MouseEventArgs e)
-        {
-            int xPos = e.Location.X;
-            int yPos = e.Location.Y;
-            int x = Grid_UIVisualGrid.GetCurrentCell(xPos);
-            int y = Grid_UIVisualGrid.GetCurrentCell(yPos);
-            Grid_UIVisualGrid.FillGridCell(x, y, System.Drawing.Color.Gray);
-            Grid_UIVisualGrid.DisplayGrid();
-        }
+
         private void UpdateVisualGridDimensions(object sender, EventArgs e)
         {
             Grid_UIVisualGrid.SetGridDimensions((int)MazeDimensions_UINumeric.Value);
@@ -27,7 +19,6 @@ namespace GridMazeSolverApplication.View
         public MainForm()
         {
             InitializeComponent();
-            OnCellSelected += FillCellColor;
             OnMazeDimensionsChanged += UpdateVisualGridDimensions;
         }
 
@@ -63,15 +54,10 @@ namespace GridMazeSolverApplication.View
             remove { Grid_UIVisualGrid.Paint -= value; }
         }
                         //OnCellClick
-        public event MouseEventHandler OnCellSelected
+        public event EventHandler OnCellSelected
         {
-            add { Grid_UIVisualGrid.MouseDown += value; }
-            remove { Grid_UIVisualGrid.MouseDown -= value; }
-        }
-        public event MouseEventHandler OnCellRangeCelected
-        {
-            add { Grid_UIVisualGrid.MouseMove += value; }
-            remove { Grid_UIVisualGrid.MouseMove -= value; }
+            add { Grid_UIVisualGrid.Click += value; }
+            remove { Grid_UIVisualGrid.Click -= value; }
         }
         public event EventHandler OnSelectedAlgorithmChanged
         {
@@ -138,10 +124,21 @@ namespace GridMazeSolverApplication.View
         {
             Grid_UIVisualGrid.FillGridCell(x, y, DisplayColors.EndColor);
         }
+        public int GetGridPositionX()
+        {
+            int mouseX = Grid_UIVisualGrid.PointToClient(MousePosition).X;
+            return Grid_UIVisualGrid.GetCurrentCell(mouseX);
+        }
+        public int GetGridPositionY()
+        {
+            int mouseY = Grid_UIVisualGrid.PointToClient(MousePosition).Y;
+            return Grid_UIVisualGrid.GetCurrentCell(mouseY);
+        }
         public void DrawGrid()
         {
             Grid_UIVisualGrid.DisplayGrid();
         }
+
         //public void UpdateCellDisplay();
         public void DisplayErrorDetails(Exception ex)
         {
@@ -149,6 +146,10 @@ namespace GridMazeSolverApplication.View
                 +"Message:\n" + ex.Message;
             string title = "Exception Handled:";
             MessageBox.Show(message, title);
+        }
+        public void DisplayErrorDetails(string s)
+        {
+            MessageBox.Show(s);
         }
     }
 }

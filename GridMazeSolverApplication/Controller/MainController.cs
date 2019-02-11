@@ -71,6 +71,8 @@ namespace GridMazeSolverApplication.Controller
             View.OnShowMazeSolutionSelected += EventSetCurrectAlgorithmSelected;
             View.OnShowMazeSolutionSelected += EventDisplaySolutionSelected;
             View.OnPaintGridControl += EventPaintGrid;
+
+            View.OnCellSelected += EventCellSelected;
         }
          
         //Event Methods
@@ -125,6 +127,26 @@ namespace GridMazeSolverApplication.Controller
         }
         private void EventPaintGrid(object sender, EventArgs e)
         {
+            UpdateViewDrawGrid();
+        }
+
+        private void EventCellSelected(object sender, EventArgs e)
+        {
+            int x = View.GetGridPositionX();
+            int y = View.GetGridPositionY();
+            INode currentNode = Maze.GetNode(x, y);
+            if (currentNode == null) { return; }
+            MazeCellTypeValues type = currentNode.TypeValue;
+            if(currentNode == Maze.Start || currentNode == Maze.End) { return; }
+            if(type == MazeCellTypeValues.open)
+            {
+                currentNode.TypeValue = MazeCellTypeValues.wall;
+            }
+            else if(type == MazeCellTypeValues.wall)
+            {
+                currentNode.TypeValue = MazeCellTypeValues.open;
+            }
+            View.UpdateCellType(x, y, (int)currentNode.TypeValue);//Create Method for this
             UpdateViewDrawGrid();
         }
 
@@ -184,6 +206,11 @@ namespace GridMazeSolverApplication.Controller
                 int y = n.YPosition;
                 View.UpdateSolutionPath(x, y);
             }
+            UpdateViewDrawGrid();
+        }
+        private void UpdateViewClearMazeSolutionPath()
+        {
+            //foreach (INode n in S) { }
         }
         private void UpdateViewDrawGrid()
         {

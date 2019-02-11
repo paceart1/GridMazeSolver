@@ -6,6 +6,7 @@ namespace GridMazeSolverApplication.Controller
     {
         event EventHandler OnGenerateMazeSelected;
         event EventHandler OnShowMazeSolutionSelected;
+        event EventHandler OnCellSelected;//in progress
         event System.Windows.Forms.PaintEventHandler OnPaintGridControl;
 
         //Properties
@@ -21,6 +22,9 @@ namespace GridMazeSolverApplication.Controller
         void UpdateStart(int x, int y);
         void UpdateEnd(int x, int y);
         void DrawGrid();
+        int GetGridPositionX();
+        int GetGridPositionY();
         void DisplayErrorDetails(Exception ex);
+        void DisplayErrorDetails(string s); //temp
     }
 }
