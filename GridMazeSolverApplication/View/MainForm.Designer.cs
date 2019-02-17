@@ -187,8 +187,8 @@
             // Grid_UIVisualGrid
             // 
             this.Grid_UIVisualGrid.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Grid_UIVisualGrid.cellCountX = 5;
-            this.Grid_UIVisualGrid.cellCountY = 5;
+            this.Grid_UIVisualGrid.CellCountX = 5;
+            this.Grid_UIVisualGrid.CellCountY = 5;
             this.Grid_UIVisualGrid.Location = new System.Drawing.Point(18, 20);
             this.Grid_UIVisualGrid.Name = "Grid_UIVisualGrid";
             this.Grid_UIVisualGrid.Size = new System.Drawing.Size(375, 375);

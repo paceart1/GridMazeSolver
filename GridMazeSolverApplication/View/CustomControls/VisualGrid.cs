@@ -8,10 +8,10 @@ namespace GridMazeSolverApplication.CustomControls
     {
         int[,] GridValues = new int[0,0];
         float cellWidth;
-        int gridLineWeight;
+        float gridLineWeight;
         void SetCellWidth()
         {
-            cellWidth = (float)this.Size.Width / cellCountX;
+            cellWidth = (float)this.Size.Width / CellCountX;
         }        
         void PaintCell(int x, int y, Color c)
         {
@@ -26,40 +26,25 @@ namespace GridMazeSolverApplication.CustomControls
             SolidBrush brush = new SolidBrush(c);
             g.FillRectangle(brush, startX, startY, stopX, stopY);
         }
-        public void DisplayGrid()
+        public void DisplayGridLines()
         {
+           // if(VisibleGridLines == false) { return; }
             Graphics g = this.CreateGraphics();
             Pen pen = new Pen(Color.DarkGray);
-            pen.Width = (float)gridLineWeight;
+            pen.Width = gridLineWeight;
 
-            for (int ii = 1; ii < cellCountX; ii++)
+            for (int ii = 1; ii < CellCountX; ii++)
             {
                 g.DrawLine(pen, cellWidth * ii, 0, cellWidth * ii, this.Height);
             }
-            for (int ii = 1; ii < cellCountY; ii++)
+            for (int ii = 1; ii < CellCountY; ii++)
             {
                 g.DrawLine(pen, 0, cellWidth * ii, this.Width, cellWidth * ii);
             }
         }
-      /*  void DrawGrid(Object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Pen pen = new Pen(Color.DarkGray);
-            pen.Width = (float)gridLineWeight;
-
-            for (int ii = 1; ii < cellCountX; ii++)
-            {
-                g.DrawLine(pen, cellWidth * ii, 0, cellWidth * ii, this.Height);
-            }
-            for (int ii = 1; ii < cellCountY; ii++)
-            {
-                g.DrawLine(pen, 0, cellWidth * ii, this.Width, cellWidth * ii);
-            }
-        }
-        */
-        public int cellCountX { get; set; }
-        public int cellCountY { get; set; }
-        public bool VisibleGridLines { get; set; } //activate gridlines
+        public int CellCountX { get; set; }
+        public int CellCountY { get; set; }
+        public bool VisibleGridLines { get; set; } //activate gridlines (Not implimented)
         public int GetCurrentCell(int loc)
         {
             return (int)Math.Floor(loc / cellWidth);
@@ -68,10 +53,16 @@ namespace GridMazeSolverApplication.CustomControls
         {
             PaintCell(x, y, c);
         }
+        public void FillGrid(Color c)
+        {
+            Graphics g = this.CreateGraphics();
+            SolidBrush brush = new SolidBrush(c);
+            g.FillRectangle(brush, 0, 0, this.Size.Width, this.Size.Height);
+        }
         public void SetGridDimensions(int cellCount)
         {
-            cellCountX = cellCount;
-            cellCountY = cellCount;
+            CellCountX = cellCount;
+            CellCountY = cellCount;
             SetCellWidth();
         }
         public VisualGrid()
@@ -80,8 +71,8 @@ namespace GridMazeSolverApplication.CustomControls
             InitializeComponent();
             
             SetGridDimensions(5);
-            gridLineWeight = 1;
-           // this.Paint += DrawGrid;
+            gridLineWeight = 1f;
+            
            
         }
     }

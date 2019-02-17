@@ -15,16 +15,18 @@ namespace GridMazeSolverApplication.Controller
         int CurrentMazeTypeSelected { get; set; }
 
         //Methods
+        
         void AddAlgorithmToList(string algorithm);
         void AddMazeTypeToList(string type);
+        void UpdateAllCells(int type);
         void UpdateCellType(int x, int y, int t);
         void UpdateSolutionPath(int x, int y);
         void UpdateStart(int x, int y);
         void UpdateEnd(int x, int y);
-        void DrawGrid();
+        void DrawGridLines();
         int GetGridPositionX();
         int GetGridPositionY();
-        void DisplayErrorDetails(Exception ex);
-        void DisplayErrorDetails(string s); //temp
+        void DisplayErrorDetailsDebugging(Exception ex);
+        void DisplayMessageToUser(string s); //temp
     }
 }

@@ -12,7 +12,7 @@
 
         //Public Methods
 
-        void SetNodeAsPathToCurrent(INode n);
+        //void SetNodeAsPathToCurrent(INode n);
         string ToString();
     }
 }

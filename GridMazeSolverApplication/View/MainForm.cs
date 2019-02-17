@@ -7,7 +7,25 @@ namespace GridMazeSolverApplication.View
 {
     public partial class MainForm : Form, IMainView
     {
-
+        //
+        //private Methods
+        private Color GetColor(int type)
+        {
+            Color c;
+            switch (type)
+            {
+                case 0:
+                    c = DisplayColors.OpenColor;
+                    break;
+                case 1:
+                    c = DisplayColors.WallColor;
+                    break;
+                default:
+                    c = DisplayColors.UnknownTypeColor;
+                    break;
+            }
+            return c;
+        }
         //Private EventArgs
 
         private void UpdateVisualGridDimensions(object sender, EventArgs e)
@@ -53,7 +71,6 @@ namespace GridMazeSolverApplication.View
             add { Grid_UIVisualGrid.Paint += value; }
             remove { Grid_UIVisualGrid.Paint -= value; }
         }
-                        //OnCellClick
         public event EventHandler OnCellSelected
         {
             add { Grid_UIVisualGrid.Click += value; }
@@ -87,28 +104,17 @@ namespace GridMazeSolverApplication.View
             set { SetMazeType_UIComboBox.SelectedIndex = value; }
         }
 
-        // public int MouseLocationX{get { }}
-        // public int MouseLocationY { get; }
-
         //UI Methods
         public void AddAlgorithmToList(string algorithmName) { SetAlgorithm_UICombobox.Items.Add(algorithmName); }
         public void AddMazeTypeToList(string typeName) { SetMazeType_UIComboBox.Items.Add(typeName); }
+        public void UpdateAllCells(int type)
+        {
+            Color c = GetColor(type);
+            Grid_UIVisualGrid.FillGrid(c);
+        }
         public void UpdateCellType(int x, int y, int type)
         {
-            Color c;
-            switch(type)
-            {
-                case 0:
-                    c = DisplayColors.OpenColor;
-                    break;
-                case 1:
-                    c = DisplayColors.WallColor;
-                    break;
-                default:
-                    c = DisplayColors.UnknownTypeColor;
-                    break;
-            }
-
+            Color c = GetColor(type);
             Grid_UIVisualGrid.FillGridCell(x, y, c);
         }
         public void UpdateSolutionPath(int x, int y)
@@ -134,20 +140,20 @@ namespace GridMazeSolverApplication.View
             int mouseY = Grid_UIVisualGrid.PointToClient(MousePosition).Y;
             return Grid_UIVisualGrid.GetCurrentCell(mouseY);
         }
-        public void DrawGrid()
+        public void DrawGridLines()
         {
-            Grid_UIVisualGrid.DisplayGrid();
+            Grid_UIVisualGrid.DisplayGridLines();
         }
 
         //public void UpdateCellDisplay();
-        public void DisplayErrorDetails(Exception ex)
+        public void DisplayErrorDetailsDebugging(Exception ex)
         {
             string message = "StackTrace:\n" + ex.StackTrace + "\n\n" 
                 +"Message:\n" + ex.Message;
             string title = "Exception Handled:";
             MessageBox.Show(message, title);
         }
-        public void DisplayErrorDetails(string s)
+        public void DisplayMessageToUser(string s)
         {
             MessageBox.Show(s);
         }
