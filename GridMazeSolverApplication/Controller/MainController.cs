@@ -9,11 +9,10 @@ namespace GridMazeSolverApplication.Controller
     public class MainController
     {
         IMainView View;
+        IMaze Maze;
         List<IAlgorithm> Algorithms;
         IAlgorithm CurrentAlgorithm;
-        IMaze Maze;
-      //  List<INode> MazeSolution; //Need to refactor to keep solution persistant
-        
+                
         //Local Control Methods
         private void InitializeProgramValues()
         {
@@ -120,7 +119,8 @@ namespace GridMazeSolverApplication.Controller
                 SetMazeGrid(newMazeType, newMazeDimension);
                 SetMazeStart();
                 SetMazeEnd(newMazeDimension);
-                
+                Maze.MazeSolution.Solution = null;
+
                 //Update View to display maze
                 UpdateViewDisplayMaze(Maze.MazeGrid.Grid);
                 UpdateViewDisplayStart(Maze.Start);
@@ -260,7 +260,7 @@ namespace GridMazeSolverApplication.Controller
         public MainController(IMainView passedView)
         {
             View = passedView;
-            Maze = new Maze();//temp
+            Maze = new Maze(new NodeMatrix(), new MazeSolution());
             Algorithms = new List<IAlgorithm>();
             InitializeProgramValues();
             ConnectEventMethodsToView();

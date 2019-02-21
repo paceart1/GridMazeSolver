@@ -13,8 +13,16 @@ namespace GridMazeSolverApplication.Model
         //private Methods
 
         //public Properties
-        public INodeMatrix MazeGrid { get; private set; }
-        public IMazeSolution MazeSolution { get; private set; }
+        public INodeMatrix MazeGrid
+        {
+            get { return mazeGrid; }
+            private set { mazeGrid = value; }
+        }
+        public IMazeSolution MazeSolution
+        {
+            get { return mazeSolution; }
+            private set { mazeSolution = value; }
+        }
         public INode Start
         {
             get { return start; }
@@ -54,11 +62,14 @@ namespace GridMazeSolverApplication.Model
         {
             return base.ToString();
         }
-        public Maze()
+
+        //Constructor
+        public Maze(INodeMatrix grid, IMazeSolution solution)
         {
-            MazeGrid = new NodeMatrix();
-            MazeSolution = new MazeSolution(); //pass through constructor
-            
+            if(grid == null) { throw new ArgumentNullException("Object implimenting INodeMatrix cannot be null."); }
+            if(solution == null) { throw new ArgumentNullException("Object implimenting IMazeSolution cannot be null."); }
+            MazeGrid = grid;
+            MazeSolution = solution;
         }
     }
 }
