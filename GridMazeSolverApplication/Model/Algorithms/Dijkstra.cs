@@ -10,8 +10,10 @@ namespace GridMazeSolverApplication.Model.Algorithms
         List<INode> Frontier;
         List<INode> UnProcessedNodes;
         List<INode> CurrentNeighbors;
+        INode currentNode;
         //IMaze Maze;
 
+        //Main Loop that calculates Solution
         List<INode> CalculateMazeSolution(IMaze maze)
         {
             //Validate passed maze
@@ -21,7 +23,7 @@ namespace GridMazeSolverApplication.Model.Algorithms
             //Create and initializes variables
             double startingDistanceVal = 0;
             double UnknownDistanceVal = double.PositiveInfinity;
-            INode currentNode = null;
+            CurrentNode = null;
             bool finished = false;
 
             //Initialize Objects
@@ -33,7 +35,7 @@ namespace GridMazeSolverApplication.Model.Algorithms
             //Initialize Grid to default values
             maze.MazeGrid.InitializeNodeConnectionsToNull();
             maze.MazeGrid.InitializeKnownDistancesFromstart(UnknownDistanceVal);
-            maze.Start.DistanceToNodeFromStart = startingDistanceVal; ;
+            maze.Start.DistanceToNodeFromStart = startingDistanceVal; 
 
             //Initializes unprocessedList to reference all nodes in maze
             foreach (INode n in maze.MazeGrid.Grid) { UnProcessedNodes.Add(n); }
@@ -50,27 +52,27 @@ namespace GridMazeSolverApplication.Model.Algorithms
             {
                 if (Frontier.Count > 0)
                 {
-                    currentNode = Frontier[0];
-                           //ToAdd: Fire function CurrentNodeUpdatedForDisplay create listner
-                    UnProcessedNodes.Remove(currentNode);
-                    CurrentNeighbors = GetAdjacentNeighborNodes(currentNode, maze);
+                    CurrentNode = Frontier[0];                    
+                    UnProcessedNodes.Remove(CurrentNode);
+                    CurrentNeighbors = GetAdjacentNeighborNodes(CurrentNode, maze);
                     //Loop calculates and sets the new shortest distance to each of the current Node's neighbors
                     foreach (INode neighbor in CurrentNeighbors)
                     {
-                        UpdateAdjacentDistanceFromStart(currentNode, neighbor);
+                        UpdateAdjacentDistanceFromStart(CurrentNode, neighbor);
                         if (!Frontier.Contains(neighbor))
                         {
                             Frontier.Add(neighbor);
-                                      //To Add: Fire function CurrentNeighborUpdatedForDisplay create listner
+//***To Add: Fire function CurrentNeighborUpdatedForDisplay create listener
                         }
                     }
                     //Remove curent Node from Frontier.  This node is Complete.
-                    Frontier.Remove(currentNode);
+                    Frontier.Remove(CurrentNode);
                     //Sort frontier so that the Node with the shortes current path will be next to be checked
                     Frontier.Sort(delegate (INode x, INode y)
                     {
                         return x.DistanceToNodeFromStart.CompareTo(y.DistanceToNodeFromStart);
                     });
+                    if (CurrentNode == maze.End) { finished = true; }
                 }
                 else
                 {
@@ -80,21 +82,22 @@ namespace GridMazeSolverApplication.Model.Algorithms
 
             if (maze.End.PreviousNodeToCurrent == null) { return null; }
             Solution = GetFullPathToNode(maze.End);
+            Solution.Reverse();
             return Solution;
         }
 
-        //used for calculating solution
+        
         List<INode> GetFullPathToNode(INode n)
         {
             if (n == null) { throw new ArgumentNullException("Passed node cannot be null."); }
             List<INode> path = new List<INode>();
-            INode currentNode = n;
+            INode CurrentNode = n;
             do
             {
-                path.Add(currentNode);
-                currentNode = currentNode.PreviousNodeToCurrent;
+                path.Add(CurrentNode);
+                CurrentNode = CurrentNode.PreviousNodeToCurrent;
             }
-            while (currentNode != null);
+            while (CurrentNode != null);
             return path;
         }
         //returns a list of the nodes adjacent(Top, Bottom, Left, Right) to the passed node in a maze
@@ -105,34 +108,58 @@ namespace GridMazeSolverApplication.Model.Algorithms
             List<INode> neighbors = new List<INode>();
             for (int ii = 0; ii < adjacentIndexes.GetLength(0); ii++)
             {
-                INode currentNode = maze.MazeGrid.GetNode(adjacentIndexes[ii, 0], adjacentIndexes[ii, 1]);
-                if (!UnProcessedNodes.Contains(currentNode)){continue; } 
-                if (currentNode.TypeValue == MazeCellTypeValues.wall) { continue; }
-                neighbors.Add(currentNode);
+                INode CurrentNode = maze.MazeGrid.GetNode(adjacentIndexes[ii, 0], adjacentIndexes[ii, 1]);
+                if (!UnProcessedNodes.Contains(CurrentNode)){continue; } 
+                if (CurrentNode.TypeValue == MazeCellTypeValues.wall) { continue; }
+                neighbors.Add(CurrentNode);
             }
             return neighbors;
         }
 
         //Calculates the distance from the start to the passed neighbor Node through the current node.
         //Updates the value if the calculated distance is shorter than the current value.
-        void UpdateAdjacentDistanceFromStart(INode currentNode, INode neighborNode)
+        void UpdateAdjacentDistanceFromStart(INode CurrentNode, INode neighborNode)
         {
             double currentDistanceVal = neighborNode.DistanceToNodeFromStart;
-            double newDistanceVal = currentNode.DistanceToNodeFromStart + (int)neighborNode.DistanceWeightValue;
+            double newDistanceVal = CurrentNode.DistanceToNodeFromStart + (int)neighborNode.DistanceWeightValue;
             if (currentDistanceVal > newDistanceVal)
             {
                 neighborNode.DistanceToNodeFromStart = newDistanceVal;
-                neighborNode.PreviousNodeToCurrent = currentNode;
+                neighborNode.PreviousNodeToCurrent = CurrentNode;
             }
         }
+
+        //Public Events
+        public event EventHandler CurrentNodeChanged;
         
-        //Public
+        //Public Properties
         public string Name { get; private set; }
+        public INode CurrentNode
+        {
+            get { return currentNode; }
+            private set
+            {
+                currentNode = value;
+                if (value != null)
+                {
+                    OnCurrentNodeChanged();
+                }
+                
+            }
+        }
+        //Public Methods
+        public void OnCurrentNodeChanged()
+        {
+            
+            EventHandler handler = CurrentNodeChanged;
+            handler(this, EventArgs.Empty);
+        }
         public List<INode> GetMazeSolution(IMaze passedMaze)
         {
             List<INode> solution = CalculateMazeSolution(passedMaze);
             return solution;
         }
+        public List<INode> GetCurrentNeighbors() { return this.CurrentNeighbors; }
         public Dijkstra()
         {
             Name = "Dijkstra";    

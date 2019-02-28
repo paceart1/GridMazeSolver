@@ -1,4 +1,5 @@
 ﻿using GridMazeSolverApplication.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace GridMazeSolverApplication.Model
@@ -7,5 +8,7 @@ namespace GridMazeSolverApplication.Model
     {
         string Name { get; }
         List<INode> GetMazeSolution(IMaze m);
+        INode CurrentNode{get;}
+        event EventHandler CurrentNodeChanged;
     }
 }

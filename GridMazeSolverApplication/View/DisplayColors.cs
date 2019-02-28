@@ -9,6 +9,7 @@ namespace GridMazeSolverApplication.View
         public static Color StartColor { get; set; } = Color.Green;
         public static Color EndColor { get; set; } = Color.Blue;
         public static Color PathColor { get; set; } = Color.Aquamarine;
+        public static Color CurrentAnalyzed { get; set; } = Color.DarkRed;
         public static Color UnknownTypeColor { get; set; } = Color.Empty;
     }
 }

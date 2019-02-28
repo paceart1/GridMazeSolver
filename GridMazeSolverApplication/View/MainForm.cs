@@ -9,7 +9,7 @@ namespace GridMazeSolverApplication.View
     {
         //
         //private Methods
-        private Color GetColor(int type)
+        private Color GetTypeColor(int type)
         {
             Color c;
             switch (type)
@@ -19,6 +19,20 @@ namespace GridMazeSolverApplication.View
                     break;
                 case 1:
                     c = DisplayColors.WallColor;
+                    break;
+                default:
+                    c = DisplayColors.UnknownTypeColor;
+                    break;
+            }
+            return c;
+        }
+        private Color GetAlgorithmColor(int type)
+        {
+            Color c;
+            switch (type)
+            {
+                case 0:
+                    c = DisplayColors.CurrentAnalyzed;
                     break;
                 default:
                     c = DisplayColors.UnknownTypeColor;
@@ -41,6 +55,11 @@ namespace GridMazeSolverApplication.View
         }
 
         //Event Handlers
+        public event EventHandler OnShowAlgorithmGraphicsCheckedChanged
+        {
+            add { chkShowAlgorithGraphics.CheckedChanged += value; }
+            remove { chkShowAlgorithGraphics.CheckedChanged -= value; }
+        }
         public event EventHandler OnGenerateMazeSelected
         {
             add { GenerateMaze_UIButton.Click += value; }
@@ -88,6 +107,11 @@ namespace GridMazeSolverApplication.View
         }
 
         //UI Properties
+        public bool ShowAlgorithmGraphics
+        {
+            get { return chkShowAlgorithGraphics.Checked; }
+            set { chkShowAlgorithGraphics.Checked = value; }
+        }
         public int MazeDimensionsSelected
         {
             get { return (int)MazeDimensions_UINumeric.Value; }
@@ -104,19 +128,25 @@ namespace GridMazeSolverApplication.View
             set { SetMazeType_UIComboBox.SelectedIndex = value; }
         }
 
+
         //UI Methods
         public void AddAlgorithmToList(string algorithmName) { SetAlgorithm_UICombobox.Items.Add(algorithmName); }
         public void AddMazeTypeToList(string typeName) { SetMazeType_UIComboBox.Items.Add(typeName); }
-        public void UpdateAllCells(int type)
+        public void UpdateAllCellsType(int type)
         {
-            Color c = GetColor(type);
+            Color c = GetTypeColor(type);
             Grid_UIVisualGrid.FillGrid(c);
         }
         public void UpdateCellType(int x, int y, int type)
         {
-            Color c = GetColor(type);
+            Color c = GetTypeColor(type);
             Grid_UIVisualGrid.FillGridCell(x, y, c);
         }
+        public void ShowAlgorithmCurrentCellAnalyzed(int x, int y)
+        {
+            Color c = DisplayColors.CurrentAnalyzed;
+            Grid_UIVisualGrid.FillGridCell(x, y, c);
+        } //<----------------------
         public void UpdateSolutionPath(int x, int y)
         {
             Color c = DisplayColors.PathColor;
@@ -145,7 +175,6 @@ namespace GridMazeSolverApplication.View
             Grid_UIVisualGrid.DisplayGridLines();
         }
 
-        //public void UpdateCellDisplay();
         public void DisplayErrorDetailsDebugging(Exception ex)
         {
             string message = "StackTrace:\n" + ex.StackTrace + "\n\n" 

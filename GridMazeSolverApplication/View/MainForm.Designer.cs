@@ -42,6 +42,7 @@
             this.SolveMaze_UIButton = new System.Windows.Forms.Button();
             this.MazeContainer_UIGroupbox = new System.Windows.Forms.GroupBox();
             this.Grid_UIVisualGrid = new GridMazeSolverApplication.CustomControls.VisualGrid();
+            this.chkShowAlgorithGraphics = new System.Windows.Forms.CheckBox();
             this.MazeOptions_UIGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MazeDimensions_UINumeric)).BeginInit();
             this.SolutionOptions_UIGroupbox.SuspendLayout();
@@ -117,6 +118,7 @@
             // 
             // SolutionOptions_UIGroupbox
             // 
+            this.SolutionOptions_UIGroupbox.Controls.Add(this.chkShowAlgorithGraphics);
             this.SolutionOptions_UIGroupbox.Controls.Add(this.SetAlgorithm_Label);
             this.SolutionOptions_UIGroupbox.Controls.Add(this.SetAlgorithm_UICombobox);
             this.SolutionOptions_UIGroupbox.Location = new System.Drawing.Point(13, 163);
@@ -195,6 +197,16 @@
             this.Grid_UIVisualGrid.TabIndex = 0;
             this.Grid_UIVisualGrid.VisibleGridLines = false;
             // 
+            // chkShowAlgorithGraphics
+            // 
+            this.chkShowAlgorithGraphics.AutoSize = true;
+            this.chkShowAlgorithGraphics.Location = new System.Drawing.Point(10, 110);
+            this.chkShowAlgorithGraphics.Name = "chkShowAlgorithGraphics";
+            this.chkShowAlgorithGraphics.Size = new System.Drawing.Size(99, 17);
+            this.chkShowAlgorithGraphics.TabIndex = 2;
+            this.chkShowAlgorithGraphics.Text = "Show Algorithm";
+            this.chkShowAlgorithGraphics.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -235,5 +247,6 @@
         private System.Windows.Forms.Label MazeDimension_Label;
         private System.Windows.Forms.ComboBox SetMazeType_UIComboBox;
         private System.Windows.Forms.Label MazeType_UILabel;
+        private System.Windows.Forms.CheckBox chkShowAlgorithGraphics;
     }
 }

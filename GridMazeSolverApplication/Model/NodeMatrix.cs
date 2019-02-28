@@ -9,12 +9,15 @@ namespace GridMazeSolverApplication.Model
         private List<INode> grid;
         int xDimension;
         int yDimension;
+
         //Private methods
+        //Calculates the 1D index position based on the passed 2D position and the X dimension of the 2D matrix
         private int CalculateNodeIndexPosition(int xGridPosition, int yGridPosition, int xDimensionOfGrid)
         {
             //Flattens a 2d matrix position and returns the flat index position
             return (xGridPosition + (yGridPosition * xDimensionOfGrid));
         }
+        //Checks if the passed x, y position is within the defined dimensions of the  Node matrix
         private bool CheckCellInRange(int xGridPosition, int yGridPosition)
         {
             if (xGridPosition < 0 || xGridPosition >= XDimension)
@@ -62,6 +65,7 @@ namespace GridMazeSolverApplication.Model
         {
             get { return Grid.Count; }
         }
+
         //public methods
         public INode GetNode(int xPosition, int yPosition)
         {
@@ -69,6 +73,7 @@ namespace GridMazeSolverApplication.Model
             int position = CalculateNodeIndexPosition(xPosition, yPosition, XDimension);
             return Grid[position];
         }
+        //Initializes the known distance values of all Nodes in the Grid to a value that represents 'unknown'
         public void InitializeKnownDistancesFromstart(double infinityValue)
         {
             if (Grid == null) { throw new ArgumentNullException("MazeGrid cannot be initialized with values when null."); }
@@ -77,6 +82,7 @@ namespace GridMazeSolverApplication.Model
                 n.DistanceToNodeFromStart = infinityValue;
             }
         }
+        //Initializes all Node connections in the Grid to Null
         public void InitializeNodeConnectionsToNull()
         {
             if (Grid == null) { throw new ArgumentNullException("MazeGrid connections cannot be initialized with values when null."); }

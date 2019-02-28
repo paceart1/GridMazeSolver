@@ -22,7 +22,7 @@ namespace GridMazeSolverApplication.Model
             }
             return maze;
         }
-        private static List<INode> GenerateScatterMaze(int dimensions)
+        private static List<INode> GenerateScatterMaze(int dimensions, int wallProbability)
         {
             Random gen = new Random();
             int randVal;
@@ -31,9 +31,9 @@ namespace GridMazeSolverApplication.Model
             {
                 for (int jj = 0; jj < dimensions; jj++)
                 {
-                    randVal = gen.Next(1, 11);
+                    randVal = gen.Next(1, 101);
                     INode n = new Node(jj, ii);
-                    if (randVal >= 9)
+                    if (randVal <= wallProbability)
                     {
                         n.TypeValue = MazeCellTypeValues.wall;
                         n.DistanceWeightValue = MazeCellWeightValues.wall;
@@ -61,7 +61,7 @@ namespace GridMazeSolverApplication.Model
                     mazeGrid = MazeGridFactory.GenerateBlankMaze(mazeDimension);
                     break;
                 case MazeTypes.Scatter:
-                    mazeGrid = MazeGridFactory.GenerateScatterMaze(mazeDimension);
+                    mazeGrid = MazeGridFactory.GenerateScatterMaze(mazeDimension, 20);
                     break;
                 case MazeTypes.Traditional:
                     mazeGrid = null;

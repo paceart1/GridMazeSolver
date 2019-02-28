@@ -4,6 +4,7 @@ using GridMazeSolverApplication.Model.EnumDefinedValues;
 using GridMazeSolverApplication.Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 namespace GridMazeSolverApplication.Controller
 {
     public class MainController
@@ -12,18 +13,21 @@ namespace GridMazeSolverApplication.Controller
         IMaze Maze;
         List<IAlgorithm> Algorithms;
         IAlgorithm CurrentAlgorithm;
+        bool ShowAlgorithmGraphics;
                 
         //Local Control Methods
         private void InitializeProgramValues()
         {
             Algorithms.Add(new Dijkstra());
-            UpdateCurrentAlgorithm(Algorithms[0]);
+
+            UpdateCurrentAlgorithm(Algorithms[0]); //<--Get rid of
             UpdateViewLoadAlgorithmsList(Algorithms);
             UpdateViewLoadMazeTypesList(); 
             UpdateViewDisplayCurrentAlgorithm(CurrentAlgorithm, Algorithms);
-
-            UpdateViewDisplayCurrentMazeDimensions(10); //need to update
-            UpdateViewDisplayCurrentMazeType(0); //need to update
+           // CurrentAlgorithm = Algorithms[0];
+            View.MazeDimensionsSelected = 20;
+            View.CurrentMazeTypeSelected = 0;
+            View.ShowAlgorithmGraphics = false;
         }     
         private List<INode> GetMazeSolutionFromAlgorithm(IMaze maze, IAlgorithm algorithm)
         {
@@ -39,7 +43,12 @@ namespace GridMazeSolverApplication.Controller
         }
         private void UpdateCurrentAlgorithm(IAlgorithm algorithm)
         {
+            if (CurrentAlgorithm != null)
+            {
+                CurrentAlgorithm.CurrentNodeChanged -= EventCurrentNodeToAnalyzeChanged;
+            }
             CurrentAlgorithm = algorithm;
+            CurrentAlgorithm.CurrentNodeChanged += EventCurrentNodeToAnalyzeChanged;
         }
         private List<INode> GenerateNewMaze(MazeTypes mazeType, int mazeDimensions)
         {
@@ -65,6 +74,7 @@ namespace GridMazeSolverApplication.Controller
         }
         private void ConnectEventMethodsToView()
         {
+            View.OnShowAlgorithmGraphicsCheckedChanged += EventDisplayAlgorithmGraphicsSelected;
             View.OnGenerateMazeSelected += EventCreateNewMaze;
             View.OnShowMazeSolutionSelected += EventSetCurrectAlgorithmSelected;
             View.OnShowMazeSolutionSelected += EventDisplaySolutionSelected;
@@ -73,8 +83,13 @@ namespace GridMazeSolverApplication.Controller
 
             
         }
+        
          
         //Event Methods
+        private void EventDisplayAlgorithmGraphicsSelected(Object sender, EventArgs e)
+        {
+            ShowAlgorithmGraphics = View.ShowAlgorithmGraphics;
+        }
         private void EventDisplaySolutionSelected(Object sender, EventArgs e)
         {
             try
@@ -159,7 +174,8 @@ namespace GridMazeSolverApplication.Controller
             if (currentNode == null) { return; }
             MazeCellTypeValues type = currentNode.TypeValue;
             if(currentNode == Maze.Start || currentNode == Maze.End) { return; }
-            if(Maze.MazeSolution.Solution != null)
+            //If statement clears the Solution, Deletes it from memory, and redraws the start and stop positions
+            if (Maze.MazeSolution.Solution != null)
             {
                 UpdateViewClearMazeSolutionPath(Maze.MazeSolution.Solution);
                 DeleteMazeSolution();
@@ -169,20 +185,27 @@ namespace GridMazeSolverApplication.Controller
             if (type == MazeCellTypeValues.open)
             {
                 currentNode.TypeValue = MazeCellTypeValues.wall;
+                currentNode.DistanceWeightValue = MazeCellWeightValues.wall;
             }
             else if(type == MazeCellTypeValues.wall)
             {
                 currentNode.TypeValue = MazeCellTypeValues.open;
+                currentNode.DistanceWeightValue = MazeCellWeightValues.open;
             }
-            View.UpdateCellType(x, y, (int)currentNode.TypeValue);//Create Method for this
+            View.UpdateCellType(x, y, (int)currentNode.TypeValue);
             UpdateViewDrawGrid();
+        }
+        private void EventCurrentNodeToAnalyzeChanged(object sender, EventArgs e)
+        {
+            INode node = CurrentAlgorithm.CurrentNode;
+            UpdateViewDisplayCurrentNodeAnalyzed(node);
         }
 
         //Update View methods
         private void UpdateViewDisplayMaze(List<INode> mazeNodeList)
         {
             if(mazeNodeList == null) { throw new ArgumentNullException("passedMazeGrid cannot be null."); }
-            View.UpdateAllCells((int)MazeCellTypeValues.open);
+            View.UpdateAllCellsType((int)MazeCellTypeValues.open);
             foreach (INode n in mazeNodeList)
             {
                 if(n.TypeValue == MazeCellTypeValues.wall) //Make more efficient by keeping a collection of wall cells
@@ -219,14 +242,6 @@ namespace GridMazeSolverApplication.Controller
             if (algorithm == null) { return; }
             View.CurrentAlgorithmTypeSelected = algorithmList.IndexOf(algorithm);
         }
-        private void UpdateViewDisplayCurrentMazeDimensions(int mazeDimensions)
-        {
-            View.MazeDimensionsSelected = mazeDimensions;
-        }
-        private void UpdateViewDisplayCurrentMazeType(int mazeTypeValue)
-        {
-            View.CurrentMazeTypeSelected = mazeTypeValue;
-        }
         private void UpdateViewDisplayMazeSolutionPath(List<INode> mazeSolution)
         {
             //test code for path
@@ -236,9 +251,17 @@ namespace GridMazeSolverApplication.Controller
             {
                 int x = n.XPosition;
                 int y = n.YPosition;
+                Thread.Sleep(20); //temp
                 View.UpdateSolutionPath(x, y);
             }
             UpdateViewDrawGrid();
+        }
+        private void UpdateViewDisplayCurrentNodeAnalyzed(INode currentNode)
+        {
+            int x = currentNode.XPosition;
+            int y = currentNode.YPosition;
+            View.ShowAlgorithmCurrentCellAnalyzed(x, y);
+            Thread.Sleep(10);
         }
         private void UpdateViewClearMazeSolutionPath(List<INode> mazeSolution)
         {
