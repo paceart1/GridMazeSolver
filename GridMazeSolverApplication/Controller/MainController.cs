@@ -41,14 +41,17 @@ namespace GridMazeSolverApplication.Controller
         {
             Maze.MazeSolution.Solution = null;
         }
+  //Algorithm display event  connections hidden here. Update.
         private void UpdateCurrentAlgorithm(IAlgorithm algorithm)
         {
             if (CurrentAlgorithm != null)
             {
                 CurrentAlgorithm.CurrentNodeChanged -= EventCurrentNodeToAnalyzeChanged;
+                CurrentAlgorithm.CurrentNeighborsChanged -= EventCurrentNeighborsToAnalyzeChanged;
             }
             CurrentAlgorithm = algorithm;
             CurrentAlgorithm.CurrentNodeChanged += EventCurrentNodeToAnalyzeChanged;
+            CurrentAlgorithm.CurrentNeighborsChanged += EventCurrentNeighborsToAnalyzeChanged;
         }
         private List<INode> GenerateNewMaze(MazeTypes mazeType, int mazeDimensions)
         {
@@ -200,7 +203,11 @@ namespace GridMazeSolverApplication.Controller
             INode node = CurrentAlgorithm.CurrentNode;
             UpdateViewDisplayCurrentNodeAnalyzed(node);
         }
-
+        private void EventCurrentNeighborsToAnalyzeChanged(object sender, EventArgs e)
+        {
+            List<INode> nodes = CurrentAlgorithm.CurrentNeighbors;
+            UpdateViewDisplayCurrentNeighborsAnalyzed(nodes);
+        }
         //Update View methods
         private void UpdateViewDisplayMaze(List<INode> mazeNodeList)
         {
@@ -261,7 +268,19 @@ namespace GridMazeSolverApplication.Controller
             int x = currentNode.XPosition;
             int y = currentNode.YPosition;
             View.ShowAlgorithmCurrentCellAnalyzed(x, y);
-            Thread.Sleep(10);
+            Thread.Sleep(20);
+        }
+        private void UpdateViewDisplayCurrentNeighborsAnalyzed(List<INode> nodes)
+        {
+            int x;
+            int y;
+            foreach (INode n in nodes)
+            {
+                x = n.XPosition;
+                y = n.YPosition;
+                View.ShowAlgorithmCurrentNeighborAnalyzed(x, y);
+                Thread.Sleep(20);
+            }
         }
         private void UpdateViewClearMazeSolutionPath(List<INode> mazeSolution)
         {

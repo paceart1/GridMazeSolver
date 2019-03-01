@@ -9,7 +9,7 @@ namespace GridMazeSolverApplication.Model.Algorithms
         List<INode> Solution;
         List<INode> Frontier;
         List<INode> UnProcessedNodes;
-        List<INode> CurrentNeighbors;
+        List<INode> currentNeighbors;
         INode currentNode;
         //IMaze Maze;
 
@@ -85,8 +85,6 @@ namespace GridMazeSolverApplication.Model.Algorithms
             Solution.Reverse();
             return Solution;
         }
-
-        
         List<INode> GetFullPathToNode(INode n)
         {
             if (n == null) { throw new ArgumentNullException("Passed node cannot be null."); }
@@ -131,7 +129,8 @@ namespace GridMazeSolverApplication.Model.Algorithms
 
         //Public Events
         public event EventHandler CurrentNodeChanged;
-        
+        public event EventHandler CurrentNeighborsChanged;
+
         //Public Properties
         public string Name { get; private set; }
         public INode CurrentNode
@@ -147,10 +146,27 @@ namespace GridMazeSolverApplication.Model.Algorithms
                 
             }
         }
+        public List<INode> CurrentNeighbors
+        {
+            get { return currentNeighbors; }
+            set
+            {
+                currentNeighbors = value;
+                if (value != null)
+                {
+                    OnCurrentNeighborsChanged();
+                }
+            }
+        }
+
         //Public Methods
+        public void OnCurrentNeighborsChanged()
+        {
+            EventHandler handler = CurrentNeighborsChanged;
+            handler(this, EventArgs.Empty);
+        }
         public void OnCurrentNodeChanged()
         {
-            
             EventHandler handler = CurrentNodeChanged;
             handler(this, EventArgs.Empty);
         }

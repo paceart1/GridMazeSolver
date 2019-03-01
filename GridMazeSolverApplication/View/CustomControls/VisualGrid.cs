@@ -47,6 +47,7 @@ namespace GridMazeSolverApplication.CustomControls
                 cellCountY = value;
             }
         }
+        public Color GridLineColor { get; set; }
         public bool VisibleGridLines { get; set; } //activate gridlines (Not implimented)
 
         //Public Methods
@@ -54,7 +55,7 @@ namespace GridMazeSolverApplication.CustomControls
         {
             // if(VisibleGridLines == false) { return; }
             Graphics g = this.CreateGraphics();
-            Pen pen = new Pen(Color.DarkGray);
+            Pen pen = new Pen(GridLineColor);
             pen.Width = gridLineWeight;
 
             for (int ii = 1; ii < CellCountX; ii++)
@@ -95,8 +96,9 @@ namespace GridMazeSolverApplication.CustomControls
             
             SetGridDimensions(5);
             gridLineWeight = 1f;
-            
-           
+            GridLineColor = Color.DarkGray;
+
+
         }
     }
 }

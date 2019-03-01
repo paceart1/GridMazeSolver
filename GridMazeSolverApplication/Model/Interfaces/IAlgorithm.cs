@@ -9,6 +9,8 @@ namespace GridMazeSolverApplication.Model
         string Name { get; }
         List<INode> GetMazeSolution(IMaze m);
         INode CurrentNode{get;}
+        List<INode> CurrentNeighbors { get; }
         event EventHandler CurrentNodeChanged;
+        event EventHandler CurrentNeighborsChanged;
     }
 }

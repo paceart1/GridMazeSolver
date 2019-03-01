@@ -32,7 +32,7 @@ namespace GridMazeSolverApplication.View
             switch (type)
             {
                 case 0:
-                    c = DisplayColors.CurrentAnalyzed;
+                    c = DisplayColors.CurrentNodeAnalyzed;
                     break;
                 default:
                     c = DisplayColors.UnknownTypeColor;
@@ -52,6 +52,7 @@ namespace GridMazeSolverApplication.View
         {
             InitializeComponent();
             OnMazeDimensionsChanged += UpdateVisualGridDimensions;
+            Grid_UIVisualGrid.GridLineColor = DisplayColors.GridColor;
         }
 
         //Event Handlers
@@ -144,9 +145,14 @@ namespace GridMazeSolverApplication.View
         }
         public void ShowAlgorithmCurrentCellAnalyzed(int x, int y)
         {
-            Color c = DisplayColors.CurrentAnalyzed;
+            Color c = DisplayColors.CurrentNodeAnalyzed;
             Grid_UIVisualGrid.FillGridCell(x, y, c);
         } //<----------------------
+        public void ShowAlgorithmCurrentNeighborAnalyzed(int x, int y)
+        {
+            Color c = DisplayColors.CurrentNeighborAnalyzed;
+            Grid_UIVisualGrid.FillGridCell(x, y, c);
+        }
         public void UpdateSolutionPath(int x, int y)
         {
             Color c = DisplayColors.PathColor;

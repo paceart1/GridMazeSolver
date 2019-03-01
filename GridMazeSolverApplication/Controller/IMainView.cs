@@ -23,6 +23,7 @@ namespace GridMazeSolverApplication.Controller
         void UpdateCellType(int x, int y, int t);
         void UpdateSolutionPath(int x, int y);
         void ShowAlgorithmCurrentCellAnalyzed(int x, int y);
+        void ShowAlgorithmCurrentNeighborAnalyzed(int x, int y);
         void UpdateStart(int x, int y);
         void UpdateEnd(int x, int y);
         void DrawGridLines();

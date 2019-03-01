@@ -5,8 +5,10 @@ namespace GridMazeSolverApplication.Model
 {
     public static class MazeGridFactory
     {
+        
         private static List<INode> GenerateBlankMaze(int dimensions)
         {
+            
             List<INode> maze = new List<INode>();
 
             for (int ii = 0; ii < dimensions; ii++)
@@ -16,6 +18,7 @@ namespace GridMazeSolverApplication.Model
                     INode n = new Node(jj, ii);
                     n.TypeValue = MazeCellTypeValues.open;
                     n.DistanceWeightValue = MazeCellWeightValues.open;
+                    
                     maze.Add(n);
 
                 }
@@ -24,6 +27,7 @@ namespace GridMazeSolverApplication.Model
         }
         private static List<INode> GenerateScatterMaze(int dimensions, int wallProbability)
         {
+            
             Random gen = new Random();
             int randVal;
             List<INode> maze = new List<INode>();
@@ -42,6 +46,7 @@ namespace GridMazeSolverApplication.Model
                     {
                         n.TypeValue = MazeCellTypeValues.open; //using method then property. confusing.
                         n.DistanceWeightValue = MazeCellWeightValues.open;
+
                     }
                     maze.Add(n);
                 }
