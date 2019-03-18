@@ -35,6 +35,7 @@
             this.MazeDimensions_UINumeric = new System.Windows.Forms.NumericUpDown();
             this.GenerateMaze_UIButton = new System.Windows.Forms.Button();
             this.SolutionOptions_UIGroupbox = new System.Windows.Forms.GroupBox();
+            this.chkShowAlgorithGraphics = new System.Windows.Forms.CheckBox();
             this.SetAlgorithm_Label = new System.Windows.Forms.Label();
             this.SetAlgorithm_UICombobox = new System.Windows.Forms.ComboBox();
             this.ProgramOptions_UIGroupbox = new System.Windows.Forms.GroupBox();
@@ -42,7 +43,6 @@
             this.SolveMaze_UIButton = new System.Windows.Forms.Button();
             this.MazeContainer_UIGroupbox = new System.Windows.Forms.GroupBox();
             this.Grid_UIVisualGrid = new GridMazeSolverApplication.CustomControls.VisualGrid();
-            this.chkShowAlgorithGraphics = new System.Windows.Forms.CheckBox();
             this.MazeOptions_UIGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MazeDimensions_UINumeric)).BeginInit();
             this.SolutionOptions_UIGroupbox.SuspendLayout();
@@ -93,6 +93,11 @@
             // MazeDimensions_UINumeric
             // 
             this.MazeDimensions_UINumeric.Location = new System.Drawing.Point(105, 35);
+            this.MazeDimensions_UINumeric.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.MazeDimensions_UINumeric.Minimum = new decimal(new int[] {
             1,
             0,
@@ -127,6 +132,16 @@
             this.SolutionOptions_UIGroupbox.TabIndex = 1;
             this.SolutionOptions_UIGroupbox.TabStop = false;
             this.SolutionOptions_UIGroupbox.Text = "Solution Options";
+            // 
+            // chkShowAlgorithGraphics
+            // 
+            this.chkShowAlgorithGraphics.AutoSize = true;
+            this.chkShowAlgorithGraphics.Location = new System.Drawing.Point(10, 110);
+            this.chkShowAlgorithGraphics.Name = "chkShowAlgorithGraphics";
+            this.chkShowAlgorithGraphics.Size = new System.Drawing.Size(99, 17);
+            this.chkShowAlgorithGraphics.TabIndex = 2;
+            this.chkShowAlgorithGraphics.Text = "Show Algorithm";
+            this.chkShowAlgorithGraphics.UseVisualStyleBackColor = true;
             // 
             // SetAlgorithm_Label
             // 
@@ -191,21 +206,12 @@
             this.Grid_UIVisualGrid.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Grid_UIVisualGrid.CellCountX = 5;
             this.Grid_UIVisualGrid.CellCountY = 5;
+            this.Grid_UIVisualGrid.GridLineColor = System.Drawing.Color.DarkGray;
             this.Grid_UIVisualGrid.Location = new System.Drawing.Point(18, 20);
             this.Grid_UIVisualGrid.Name = "Grid_UIVisualGrid";
             this.Grid_UIVisualGrid.Size = new System.Drawing.Size(375, 375);
             this.Grid_UIVisualGrid.TabIndex = 0;
             this.Grid_UIVisualGrid.VisibleGridLines = false;
-            // 
-            // chkShowAlgorithGraphics
-            // 
-            this.chkShowAlgorithGraphics.AutoSize = true;
-            this.chkShowAlgorithGraphics.Location = new System.Drawing.Point(10, 110);
-            this.chkShowAlgorithGraphics.Name = "chkShowAlgorithGraphics";
-            this.chkShowAlgorithGraphics.Size = new System.Drawing.Size(99, 17);
-            this.chkShowAlgorithGraphics.TabIndex = 2;
-            this.chkShowAlgorithGraphics.Text = "Show Algorithm";
-            this.chkShowAlgorithGraphics.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

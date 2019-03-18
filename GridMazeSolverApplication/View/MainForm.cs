@@ -178,7 +178,7 @@ namespace GridMazeSolverApplication.View
         }
         public void DrawGridLines()
         {
-            Grid_UIVisualGrid.DisplayGridLines();
+            //Grid_UIVisualGrid.DisplayGridLines();
         }
 
         public void DisplayErrorDetailsDebugging(Exception ex)

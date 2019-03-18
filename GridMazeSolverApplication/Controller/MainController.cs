@@ -267,19 +267,21 @@ namespace GridMazeSolverApplication.Controller
         {
             int x = currentNode.XPosition;
             int y = currentNode.YPosition;
+            int delay = 10;
             View.ShowAlgorithmCurrentCellAnalyzed(x, y);
-            Thread.Sleep(20);
+            Thread.Sleep(delay);
         }
         private void UpdateViewDisplayCurrentNeighborsAnalyzed(List<INode> nodes)
         {
             int x;
             int y;
+            int delay = 10;
             foreach (INode n in nodes)
             {
                 x = n.XPosition;
                 y = n.YPosition;
                 View.ShowAlgorithmCurrentNeighborAnalyzed(x, y);
-                Thread.Sleep(20);
+                Thread.Sleep(delay);
             }
         }
         private void UpdateViewClearMazeSolutionPath(List<INode> mazeSolution)
